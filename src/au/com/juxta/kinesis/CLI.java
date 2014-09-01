@@ -106,6 +106,8 @@ public class CLI {
         System.out.println("args:");
         System.out.println("-h  help");
         System.out.println("-l  list streams");
+        System.out.println("-s  list shards");
+        System.out.println("-g  get all records");
     }
     
 }
