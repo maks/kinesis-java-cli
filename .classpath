@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="libs/aws-java-sdk-1.8.9.1.jar" sourcepath="libs/aws-java-sdk-1.8.9.1-sources.jar">
+	<classpathentry kind="lib" path="libs/aws-java-sdk-1.8.9.1.jar" sourcepath="/home/maks/temp/aws-java-sdk-1.8.9.1-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/aws-kinesis-fetcher/libs/aws-java-sdk-1.8.9.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/home/maks/temp/aws-java-sdk-1.8.9.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/3pp/commons-logging-1.1.1.jar"/>
