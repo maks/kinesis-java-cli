@@ -1,3 +1,5 @@
 #!/bin/bash
 
+# set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables or have a ~/.aws/.credentials file
+
 java -cp libs/aws-java-sdk-1.8.9.1.jar:"libs/3pp/*":bin au.com.juxta.kinesis.CLI $@
