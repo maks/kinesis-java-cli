@@ -22,7 +22,7 @@ public class CLI {
 
     private static AmazonKinesisClient client;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         client = new AmazonKinesisClient();
         client.setEndpoint("kinesis.ap-southeast-2.amazonaws.com", "kinesis", "ap-southeast-2");
@@ -55,13 +55,9 @@ public class CLI {
             }
         }
         if (args[0].equalsIgnoreCase("-g")) {
-            //get records
-            List<Record> records = getRecords(args[1], getShards(args[1]).get(0));
-            System.out.println("records:");
-            for (Iterator<Record> iterator = records.iterator(); iterator.hasNext();) {
-                Record r = iterator.next();
-                System.out.println(r.getSequenceNumber()+":"+new String(r.getData().array()));
-            }
+            //get records FOREVER until we're killed
+            getRecords(args[1], getShards(args[1]).get(0));
+            
         }
     }
 
@@ -84,7 +80,7 @@ public class CLI {
         return shards;
     }
 
-    private static List<Record> getRecords(String streamname, Shard shard) {
+    private static List<Record> getRecords(String streamname, Shard shard) throws InterruptedException {
         String shardIterator;
         GetShardIteratorRequest getShardIteratorRequest = new GetShardIteratorRequest();
         getShardIteratorRequest.setStreamName(streamname);
@@ -92,12 +88,24 @@ public class CLI {
         getShardIteratorRequest.setShardIteratorType("TRIM_HORIZON");
         GetShardIteratorResult getShardIteratorResult = client.getShardIterator(getShardIteratorRequest);
         shardIterator = getShardIteratorResult.getShardIterator();
+        
+        GetRecordsResult getRecordsResult = null;
+        System.err.println("start get record loop");
+        do {
+            GetRecordsRequest getRecordsRequest = new GetRecordsRequest();
+            getRecordsRequest.setShardIterator(shardIterator);
+            getRecordsRequest.setLimit(1500);
+            getRecordsResult = client.getRecords(getRecordsRequest);
+            Thread.sleep(2000);
+            shardIterator = getRecordsResult.getNextShardIterator();
+            getRecordsResult = client.getRecords(getRecordsRequest);
+            List<Record> records = getRecordsResult.getRecords();
+            for (Iterator<Record> iterator = records.iterator(); iterator.hasNext();) {
+                Record r = iterator.next();
+                System.out.println(new String(r.getData().array()));
+            }
+        } while (true);
 
-        GetRecordsRequest getRecordsRequest = new GetRecordsRequest();
-        getRecordsRequest.setShardIterator(shardIterator);
-        getRecordsRequest.setLimit(1000);
-        GetRecordsResult getRecordsResult = client.getRecords(getRecordsRequest);
-        return getRecordsResult.getRecords();
     }
     
     
